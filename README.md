@@ -1,4 +1,4 @@
-# Daily-Calendar-Summary-Notifications-via-Telegram-from-Google-Calendar
+# Daily Calendar Summary Notifications via Telegram from Google Calendar
 This n8n workflow sends you a daily 7 AM Telegram message with all your Google Calendar events for the day. It lists event names, times, locations, and notes, or tells you there are no events. Perfect for staying organized with Google Calendar and Telegram. Requires Telegram bot token and Google account.
 
 
@@ -39,11 +39,14 @@ You'll get this:
 
 
 
+
+
 <img width="470" height="567" alt="image" src="https://github.com/user-attachments/assets/b4345ba9-faa4-4455-972d-e98f47806e4c" />
 
 
 
 Tutorial video:
+
 
 [Watch the Youtube Tutorial video
 ](https://www.youtube.com/watch?v=eIELi1iWCl4)
