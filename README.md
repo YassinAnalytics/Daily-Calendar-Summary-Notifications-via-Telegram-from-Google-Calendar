@@ -18,7 +18,7 @@ Perfect for anyone who:
 - Google Calendar.
 
 
-Steps:
+## Steps:
 
 <img width="1259" height="656" alt="image" src="https://github.com/user-attachments/assets/2f311512-7981-461a-b5db-80e07519c41f" />
 
@@ -31,7 +31,7 @@ Steps:
 - Check if you receive your daily summary on Telegram.
   
 
-You'll get this:
+## You'll get this:
 
 
 <img width="450" height="675" alt="image" src="https://github.com/user-attachments/assets/1165eede-1bad-41a9-b386-e89a67685c33" />
