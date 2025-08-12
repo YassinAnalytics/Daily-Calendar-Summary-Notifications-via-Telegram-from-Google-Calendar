@@ -45,14 +45,14 @@ You'll get this:
 
 
 
-Tutorial video:
+## Tutorial video:
 
 
 [Watch the Youtube Tutorial video
 ](https://www.youtube.com/watch?v=eIELi1iWCl4)
 
 
-How does it work?
+## How does it work?
 
 ⏰ The trigger runs every day at 7AM.
 
