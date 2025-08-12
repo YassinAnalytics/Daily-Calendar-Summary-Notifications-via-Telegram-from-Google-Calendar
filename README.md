@@ -63,3 +63,6 @@ Perfect for anyone who:
 📝 A text message is generated with a summary of all your events, including all relevant details.
 
 ❌ If no events are found, a "no event" message is sent.
+
+## Link
+Get the free template here https://n8n.io/workflows/6952-daily-calendar-summary-notifications-via-telegram-from-google-calendar/ 
