@@ -26,18 +26,22 @@ Steps:
 
 🗒️ Use the sticky notes in the n8n canvas to:
 
-Add your Telegram and Google credentials.
-
-Execute and test the workflow.
-
-Check if you receive your daily summary on Telegram.
+- Add your Telegram and Google credentials.
+- Execute and test the workflow.
+- Check if you receive your daily summary on Telegram.
+  
 
 You'll get this:
+
 
 <img width="450" height="675" alt="image" src="https://github.com/user-attachments/assets/1165eede-1bad-41a9-b386-e89a67685c33" />
 
 
+
+
 <img width="470" height="567" alt="image" src="https://github.com/user-attachments/assets/b4345ba9-faa4-4455-972d-e98f47806e4c" />
+
+
 
 Tutorial video:
 
