@@ -1,0 +1,310 @@
+{
+  "name": "Bot Telegram Calendar",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Get all the event from the items\nconst allItems = $items(\"Check google Calendar\");\n\n// initiate event board\nlet events = [];\n\n// Check items and extract events\nallItems.forEach(item => {\n  const data = item.json;\n\n  if (Array.isArray(data)) {\n    events.push(...data.filter(e => e && Object.keys(e).length > 0));\n  } else if (data && Object.keys(data).length > 0) {\n    events.push(data);\n  }\n});\n\n// Calculate the number of events\nconst eventCount = events.length;\n\nreturn [\n  {\n    json: {\n      eventCount,\n      events\n    }\n  }\n];\n"
+      },
+      "id": "4e215b7e-ffe9-416a-beac-3e73a4645c95",
+      "name": "Count event",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1568,
+        368
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "fadf9aa6-69ac-4c59-8246-25641b23547f",
+      "name": "7am trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        1152,
+        368
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "0a556b19-d5f6-42fd-aa9f-6ebfc2c5e042",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              },
+              "leftValue": "={{ $json.eventCount}}",
+              "rightValue": 0
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "86d1b394-0d1a-4868-8c1a-ef60062c646b",
+      "name": "If condition",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1776,
+        368
+      ],
+      "executeOnce": false,
+      "typeVersion": 2.2,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all of the events from IF true branch\nconst rawItems = $items();\nlet events = [];\n\n// Normalize data\nrawItems.forEach(item => {\n  const data = item.json;\n\n  if (Array.isArray(data.events)) {\n    events.push(...data.events);\n  } else if (data.event) {\n    events.push(data.event);\n  } else {\n    events.push(data);\n  }\n});\n\n// Message creation\nlet message = `☀️ Good morning! Here's your calendar for today\\n\\n📅 You have ${events.length} event${events.length > 1 ? 's' : ''} today.\\n\\n`;\n\nevents.forEach(e => {\n  message += `──────────────────────\\n`;\n  message += `📌 Name: ${e.summary || \"N/A\"}\\n`;\n  message += `⏰ Starts: ${e.start?.dateTime || e.start?.date || \"N/A\"}\\n`;\n  message += `⏳ Ends: ${e.end?.dateTime || e.end?.date || \"N/A\"}\\n\\n`;\n\n  message += `👤 Creator: ${e.creator?.email || \"N/A\"}\\n`;\n  message += `👥 Organizer: ${e.organizer?.email || \"N/A\"}\\n\\n`;\n\n  message += `📄 Type: ${e.eventType || \"N/A\"}\\n`;\n  message += `🔗 Link: ${e.htmlLink || \"N/A\"}\\n\\n`;\n\n  message += `📝 Description: ${e.description || \"No description\"}\\n`;\n  message += `📍 Location: ${e.location || \"N/A\"}\\n\\n`;\n});\n\nmessage += \"✨ Have a great day!\";\n\nreturn [\n  {\n    json: {\n      text: message\n    }\n  }\n];\n"
+      },
+      "id": "d1cdcf60-e8d5-4072-8ede-6ac2afa9c2bc",
+      "name": "Message code",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1984,
+        272
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "chatId": "1234",
+        "text": "=👋 Hi! Your calendar is clear for today 🗓️✨",
+        "additionalFields": {}
+      },
+      "id": "fc39ea49-07f1-4c87-a831-2f44a59f906d",
+      "name": "Message no meeting today",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        2080,
+        544
+      ],
+      "webhookId": "9d964a15-b2bc-4d33-afbe-fdb5d537d11a",
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "## 1.Workflow trigger and Google Calendar\n\nThe workflow is **triggered automatically** each morning at 7am.\n\nThen the second node will **analyse your Google Calendar** of the day looking for any event or meeting scheduled.\n\nHow to setup:\nSet up your Google Agenda **API credentials** ",
+        "height": 848,
+        "width": 416,
+        "color": 2
+      },
+      "id": "4af60ad6-73c3-468a-b01a-db6fc31d13e6",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1104,
+        -128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": "fr.french#holiday@group.v.calendar.google.com",
+          "cachedResultName": "Jours fériés et autres fêtes en France"
+        },
+        "returnAll": true,
+        "options": {
+          "orderBy": "startTime"
+        }
+      },
+      "id": "45a47206-e166-4506-90ad-dc87595e2e2f",
+      "name": "Check google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "position": [
+        1360,
+        368
+      ],
+      "executeOnce": false,
+      "typeVersion": 1.3,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "content": "## 2.Count event code and Branch\n\nThe first node will **count the number of event items** scheduled and **return a number**. Even if there is no event, a number (0 in this case) would be returned.\n\nThe the second node will **analyse this number**, if the number is not 0, the True branch ✅ will be activated. If it's O, it will be the False branch ❌ that will be activated.",
+        "height": 848,
+        "width": 368,
+        "color": 5
+      },
+      "id": "eee3a197-79bf-4e61-92bb-0868b727d7a8",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1536,
+        -128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 3. Send the telegram message\n\nIn the **True branch** ✅, the code node, will create the message and gather all the informations wanted about the events and meeting. So a full sum um will be sent in one message only.\nIn the Telegram send text node, the **message is sent**.\n\nIf it's the **False branch** ❌, the Telegram node will send the **message about not having meeting that day**.\n\nHow to setup:\n- Set up a Telegram bot and get the key API.\n- Connect the API credentials to the node.\n- For the **True branch** ✅, set up your message in javascript and then copy and paste the json file in the next node.\n- For the **False branch** ❌, just set up your message.",
+        "height": 848,
+        "width": 560,
+        "color": 4
+      },
+      "id": "cf0f77d4-32da-4fdc-8226-df238182f89c",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1920,
+        -128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "1234",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "7045b0a2-d30e-45ff-959c-734fb2167beb",
+      "name": "Send sum up message",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        2192,
+        272
+      ],
+      "webhookId": "126cc2af-1a44-4309-af2b-83a5f71d65d7",
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "## Required\n\n- Telegram Bot and its API\n- Google account\n- Google Calendar API",
+        "color": 3
+      },
+      "id": "ab23d375-1c50-451b-be77-78e90b6eb6cb",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        848,
+        -128
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "7am trigger": {
+      "main": [
+        [
+          {
+            "node": "Check google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Count event": {
+      "main": [
+        [
+          {
+            "node": "If condition",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If condition": {
+      "main": [
+        [
+          {
+            "node": "Message code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message no meeting today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message code": {
+      "main": [
+        [
+          {
+            "node": "Send sum up message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Count event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a4c2d5c0-b479-47f1-aed8-0049952e1ffc",
+  "meta": {
+    "instanceId": "0430772da25f7bca29bf5ef2b251086a85fb4096503a6f781526d32befd038d6"
+  },
+  "id": "CK62u3u2jJD6vwDM",
+  "tags": [
+    {
+      "createdAt": "2025-08-18T07:15:32.460Z",
+      "updatedAt": "2025-08-18T07:15:32.460Z",
+      "id": "3T7uxjPBNibzqJlE",
+      "name": "Google"
+    },
+    {
+      "createdAt": "2025-08-18T07:15:32.474Z",
+      "updatedAt": "2025-08-18T07:15:32.474Z",
+      "id": "NHXBM92Ov3ReuEwb",
+      "name": "Bot"
+    },
+    {
+      "createdAt": "2025-08-18T07:15:32.499Z",
+      "updatedAt": "2025-08-18T07:15:32.499Z",
+      "id": "bg5CwpF83fBHrGAh",
+      "name": "Productivity"
+    },
+    {
+      "createdAt": "2025-08-18T07:15:32.487Z",
+      "updatedAt": "2025-08-18T07:15:32.487Z",
+      "id": "dbUQHfVifeRxduxW",
+      "name": "Calendar"
+    },
+    {
+      "createdAt": "2025-08-18T07:15:32.509Z",
+      "updatedAt": "2025-08-18T07:15:32.509Z",
+      "id": "rxAyGkI20zmjETSb",
+      "name": "Telegram"
+    }
+  ]
+}
